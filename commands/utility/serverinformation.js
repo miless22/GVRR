@@ -39,7 +39,6 @@ module.exports = {
                 .addOptions([
                     { label: 'Server Information', description: 'Click here to view server information.', value: 'sf222' },
                     { label: 'Roleplay Information', description: 'Click here to view roleplay information.', value: 'rf22' },
-                    { label: 'Server Links', description: 'Click here to view server links.', value: 'sl22' },
                     { label: 'Session Ping', description: 'Click here to earn/remove the session ping role.', value: 'sp22' }
                 ]);
 
