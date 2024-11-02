@@ -1,4 +1,3 @@
-THE CLICK BUTTON MESSAGE STILL NOT IN EMPHRAL EMBED
 
 const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
 
