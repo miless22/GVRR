@@ -69,15 +69,6 @@ All members are required to adhere to the ROBLOX and Discord Terms of Service. V
                         components: [new ActionRowBuilder().addComponents(button)]
                     });
                     return; // Exit early for this case
-                } else if (selectedValue === 'sl22') {
-                    // Coming soon embed for 'sl22'
-                    embed = new EmbedBuilder()
-                        .setDescription('Coming Soon')
-                        .setColor('#ffcc5e')
-                        .setFooter({ 
-                            text: 'Greenville Roleplay Republic', 
-                            iconURL: 'https://cdn.discordapp.com/attachments/1302220069388029995/1302231063573168138/image-photoaidcom-cropped.webp?ex=67275caf&is=67260b2f&hm=cefa2e88be2ea755d9c82fa24e307750c45ae9e7d3d6de38b9d776edc911e1a2&' 
-                        });
                 }
 
                 // If an embed was created, send it as an ephemeral response
