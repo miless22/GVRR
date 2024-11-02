@@ -64,7 +64,6 @@ module.exports = {
                     Start Time: **${startTime}**
                     End Time: **${endTime}**
                     Date: **${date}**`)
-                .setThumbnail("https://cdn.discordapp.com/icons/896044016901185556/1d820c210578a4ec519a18b2bb9a00be.png?size=4096")
                 .setColor('#ffcc5e')
                 .setFooter({ 
                     text: 'Greenville Roleplay Republic',
