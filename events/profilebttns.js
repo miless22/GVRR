@@ -14,15 +14,18 @@ module.exports = {
 
             // Create an embed to display the data
             const dataEmbed = new EmbedBuilder()
-                .setTitle('Your Data')
-                .addFields(
-                    { name: 'Vehicles', value: vehicleData.length > 0 ? vehicleData.map((v, index) => `**${index + 1}.** ${v.make} ${v.model}`).join('\n') : 'No vehicles registered.', inline: true },
-                    { name: 'Tickets', value: ticketsData, inline: true }
-                )
+                .setTitle('Records')
+                .setDescription(`**Vehicle Information*
+                **Vehicles:** ${vehicleData}`)
+                .setColor('#ffcc5e');
+
+                const dataEmbed2 = new EmbedBuilder()
+                .setDescription(`**Tickets Information**
+                **Tickets:** ${ticketsData}`)
                 .setColor('#ffcc5e');
 
             // Send the data embed as ephemeral
-            await interaction.reply({ embeds: [dataEmbed], ephemeral: true });
+            await interaction.reply({ embeds: [dataEmbed, dataEmbed2], ephemeral: true });
         }
     },
 };
