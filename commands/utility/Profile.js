@@ -67,11 +67,10 @@ module.exports = {
 
             // Create profile embed
             const profileEmbed = new EmbedBuilder()
-                .setDescription(`> Information regarding the user's registered vehicles and tickets.
-                    
-                    User: <@${selectedUser.id}>
-                    Vehicle Count: ${vehicleData.length}
-                    License Status: ${licenseStatus}`)
+                .setDescription(`
+                    > User: <@${selectedUser.id}>
+                    > Vehicle Count: ${vehicleData.length}
+                    > License Status: ${licenseStatus}`)
                 .setColor('#ffcc5e')
                 .setThumbnail(selectedUser.displayAvatarURL({ dynamic: true }));
 
@@ -88,8 +87,14 @@ module.exports = {
                         .setStyle(ButtonStyle.Secondary)
                 );
 
-            // Send embed with buttons
-            await interaction.reply({ embeds: [profileEmbed], components: [row] });
+            // Check if the interaction is already acknowledged
+            if (!interaction.replied) {
+                // Send embed with buttons
+                await interaction.reply({ embeds: [profileEmbed], components: [row] });
+            } else {
+                // If already replied, follow up with a message (optional)
+                await interaction.followUp({ embeds: [profileEmbed], components: [row], ephemeral: true });
+            }
 
         } catch (error) {
             console.error('An error occurred while executing the command:', error);
