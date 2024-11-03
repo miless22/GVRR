@@ -20,10 +20,11 @@ module.exports = {
             const selectedUser = interaction.options.getUser('user') || interaction.user;
             const userId = selectedUser.id;
 
-            // Store the vehicle and ticket data in the client
+            // Store the vehicle, ticket, and license data in the client
             interaction.client.vehicleData = interaction.client.vehicleData || {};
             interaction.client.ticketsData = interaction.client.ticketsData || {};
             interaction.client.arrestData = interaction.client.arrestData || {};
+            interaction.client.licensesData = interaction.client.licensesData || {};
 
             // Define file paths
             const userFilePath = path.join(dataFolderPath, `${userId}.json`);
@@ -37,14 +38,7 @@ module.exports = {
                 vehicleData = JSON.parse(fs.readFileSync(userFilePath, 'utf8'));
             }
 
-            // Load license data
-            let licenseStatus = 'Active'; // Default license status
-            if (fs.existsSync(licenseFilePath)) {
-                const licenseData = JSON.parse(fs.readFileSync(licenseFilePath, 'utf8'));
-                licenseStatus = licenseData.status || licenseStatus; // Update if status exists
-            }
-
-            // Load ticket data
+            // Load tickets
             let ticketsList = 'No tickets found.';
             if (fs.existsSync(ticketFilePath)) {
                 const tickets = JSON.parse(fs.readFileSync(ticketFilePath, 'utf8'));
@@ -60,41 +54,38 @@ module.exports = {
                 arrestData = JSON.parse(fs.readFileSync(policeRecordsFilePath, 'utf8'));
             }
 
+            // Load license status
+            let licenseStatus = 'Active'; // Default license status
+            if (fs.existsSync(licenseFilePath)) {
+                const licenses = JSON.parse(fs.readFileSync(licenseFilePath, 'utf8'));
+                licenseStatus = licenses.status || 'Active'; // Set status if it exists
+            }
+
             // Store data in the client
             interaction.client.vehicleData[userId] = vehicleData;
             interaction.client.ticketsData[userId] = ticketsList;
             interaction.client.arrestData[userId] = arrestData;
+            interaction.client.licensesData[userId] = licenseStatus;
 
             // Create profile embed
             const profileEmbed = new EmbedBuilder()
-                .setDescription(`
-                    > User: <@${selectedUser.id}>
-                    > Vehicle Count: ${vehicleData.length}
-                    > License Status: ${licenseStatus}`)
+                .setDescription(`**User:** <@${selectedUser.id}>
+                    **Vehicle Count:** ${vehicleData.length}
+                    **License Status:** ${licenseStatus}`)
                 .setColor('#ffcc5e')
                 .setThumbnail(selectedUser.displayAvatarURL({ dynamic: true }));
 
-            // Create buttons for Registrations and Records
+            // Create buttons
             const row = new ActionRowBuilder()
                 .addComponents(
                     new ButtonBuilder()
-                        .setCustomId('registrations')
-                        .setLabel('Registrations')
-                        .setStyle(ButtonStyle.Primary),
-                    new ButtonBuilder()
-                        .setCustomId('records')
-                        .setLabel('Records')
-                        .setStyle(ButtonStyle.Secondary)
+                        .setCustomId('view_data')
+                        .setLabel('View Data')
+                        .setStyle(ButtonStyle.Primary)
                 );
 
-            // Check if the interaction is already acknowledged
-            if (!interaction.replied) {
-                // Send embed with buttons
-                await interaction.reply({ embeds: [profileEmbed], components: [row] });
-            } else {
-                // If already replied, follow up with a message (optional)
-                await interaction.followUp({ embeds: [profileEmbed], components: [row], ephemeral: true });
-            }
+            // Send embed with buttons
+            await interaction.reply({ embeds: [profileEmbed], components: [row] });
 
         } catch (error) {
             console.error('An error occurred while executing the command:', error);
