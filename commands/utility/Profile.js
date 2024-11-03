@@ -9,7 +9,7 @@ const ticketsDirPath = path.join(__dirname, '../../data/tickets');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('profile')
+        .setName('profile2')
         .setDescription('Displays your or another user\'s profile.')
         .addUserOption(option =>
             option.setName('user')
