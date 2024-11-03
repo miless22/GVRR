@@ -23,17 +23,28 @@ module.exports = {
             // Store the vehicle and ticket data in the client
             interaction.client.vehicleData = interaction.client.vehicleData || {};
             interaction.client.ticketsData = interaction.client.ticketsData || {};
+            interaction.client.arrestData = interaction.client.arrestData || {};
 
             // Define file paths
             const userFilePath = path.join(dataFolderPath, `${userId}.json`);
             const ticketFilePath = path.join(ticketsDirPath, `${userId}.json`);
+            const policeRecordsFilePath = path.join(policeRecordsDirPath, `${userId}.json`);
+            const licenseFilePath = path.join(licensesDirPath, `${userId}.json`);
 
-            // Load data
+            // Load vehicle data
             let vehicleData = [];
             if (fs.existsSync(userFilePath)) {
                 vehicleData = JSON.parse(fs.readFileSync(userFilePath, 'utf8'));
             }
 
+            // Load license data
+            let licenseStatus = 'Active'; // Default license status
+            if (fs.existsSync(licenseFilePath)) {
+                const licenseData = JSON.parse(fs.readFileSync(licenseFilePath, 'utf8'));
+                licenseStatus = licenseData.status || licenseStatus; // Update if status exists
+            }
+
+            // Load ticket data
             let ticketsList = 'No tickets found.';
             if (fs.existsSync(ticketFilePath)) {
                 const tickets = JSON.parse(fs.readFileSync(ticketFilePath, 'utf8'));
@@ -43,28 +54,38 @@ module.exports = {
                 }
             }
 
+            // Load police records
+            let arrestData = [];
+            if (fs.existsSync(policeRecordsFilePath)) {
+                arrestData = JSON.parse(fs.readFileSync(policeRecordsFilePath, 'utf8'));
+            }
+
             // Store data in the client
             interaction.client.vehicleData[userId] = vehicleData;
             interaction.client.ticketsData[userId] = ticketsList;
+            interaction.client.arrestData[userId] = arrestData;
 
             // Create profile embed
             const profileEmbed = new EmbedBuilder()
-                .setTitle(`${selectedUser.tag}'s Profile`)
-                .setDescription(`Information regarding the user's registered vehicles and tickets.`)
-                .addFields(
-                    { name: 'Vehicles', value: vehicleData.length > 0 ? vehicleData.map((v, index) => `**${index + 1}.** ${v.make} ${v.model}`).join('\n') : 'No vehicles registered.', inline: true },
-                    { name: 'Tickets', value: ticketsList, inline: true }
-                )
+                .setDescription(`> Information regarding the user's registered vehicles and tickets.
+                    
+                    User: <@${selectedUser.id}>
+                    Vehicle Count: ${vehicleData.length}
+                    License Status: ${licenseStatus}`)
                 .setColor('#ffcc5e')
                 .setThumbnail(selectedUser.displayAvatarURL({ dynamic: true }));
 
-            // Create buttons
+            // Create buttons for Registrations and Records
             const row = new ActionRowBuilder()
                 .addComponents(
                     new ButtonBuilder()
-                        .setCustomId('view_data')
-                        .setLabel('View Data')
-                        .setStyle(ButtonStyle.Primary)
+                        .setCustomId('registrations')
+                        .setLabel('Registrations')
+                        .setStyle(ButtonStyle.Primary),
+                    new ButtonBuilder()
+                        .setCustomId('records')
+                        .setLabel('Records')
+                        .setStyle(ButtonStyle.Secondary)
                 );
 
             // Send embed with buttons
